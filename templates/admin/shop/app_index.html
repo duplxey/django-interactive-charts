@@ -1,0 +1,141 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block bodyclass %}{{ block.super }} app-{{ app_label }}{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo;
+{% for app in app_list %}
+{{ app.name }}
+{% endfor %}
+</div>
+{% endblock %}
+{% endif %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <canvas id="salesChart"></canvas>
+    <canvas id="spendPerCustomerChart"></canvas>
+    <canvas id="paymentSuccessChart"></canvas>
+    <canvas id="paymentMethodChart"></canvas>
+    <script>
+        const colorPalette = ["#79AEC8", "#ea9a81", "#d7c081", "#78d0a7", "#F1F4C6"];
+
+        let salesCtx = document.getElementById('salesChart').getContext('2d');
+        let salesChart = new Chart(salesCtx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: '#79AEC8',
+                    borderColor: '#79AEC8',
+                    data: [0, 10, 5, 2, 20, 30, 45]
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Sales'
+                }
+            }
+        });
+
+        let spendPerCustomerCtx = document.getElementById('spendPerCustomerChart').getContext('2d');
+        let spendPerCustomerChart = new Chart(spendPerCustomerCtx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: '#79AEC8',
+                    borderColor: '#79AEC8',
+                    data: [0, 10, 5, 2, 20, 30, 45]
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Spend per customer'
+                }
+            }
+        });
+
+        let paymentSuccessCtx = document.getElementById('paymentSuccessChart').getContext('2d');
+        let paymentSuccessChart = new Chart(paymentSuccessCtx, {
+            // The type of chart we want to create
+            type: 'pie',
+
+            // The data for our dataset
+            data: {
+                labels: ['Successful', 'Unsuccessful'],
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: [colorPalette[0], colorPalette[1]],
+                    borderColor: [colorPalette[0], colorPalette[1]],
+                    data: [10, 2]
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Spend per customer'
+                }
+            }
+        });
+
+        let paymentMethodCtx = document.getElementById('paymentMethodChart').getContext('2d');
+        let paymentMethodChart = new Chart(paymentMethodCtx, {
+            // The type of chart we want to create
+            type: 'pie',
+
+            // The data for our dataset
+            data: {
+                labels: ['Credit card', 'Credit card', 'Bitcoin'],
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: [colorPalette[0], colorPalette[1], colorPalette[2]],
+                    borderColor: [colorPalette[0], colorPalette[1], colorPalette[2]],
+                    data: [1, 10, 5]
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Payment method'
+                }
+            }
+        });
+    </script>
+
+    <p>sales ($) → date (line)</p>
+    <p>average spend per customer ($) → date</p>
+    <p>success (pie)</p>
+    <p>payment method (pie)</p>
+    <div id="content-main">
+      {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+    </div>
+{% endblock %}
