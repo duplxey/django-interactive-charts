@@ -21,8 +21,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <canvas id="salesChart"></canvas>
     <canvas id="spendPerCustomerChart"></canvas>
-    <canvas id="paymentSuccessChart"></canvas>
-    <canvas id="paymentMethodChart"></canvas>
+    <div style="display: flex;">
+        <div style="width: 50%;">
+            <canvas id="paymentSuccessChart"></canvas>
+        </div>
+        <div style="width: 50%;">
+            <canvas id="paymentMethodChart"></canvas>
+        </div>
+    </div>
     <script>
         const colorPalette = ["#79AEC8", "#ea9a81", "#d7c081", "#78d0a7", "#F1F4C6"];
 
@@ -130,11 +136,6 @@
             }
         });
     </script>
-
-    <p>sales ($) → date (line)</p>
-    <p>average spend per customer ($) → date</p>
-    <p>success (pie)</p>
-    <p>payment method (pie)</p>
     <div id="content-main">
       {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
     </div>
