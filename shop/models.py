@@ -20,6 +20,7 @@ class Purchase(models.Model):
         ('BC', 'Bitcoin'),
     ]
     payment_method = models.CharField(max_length=2, default='CC', choices=PAYMENT_METHODS)
+    successful = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.customer_full_name}, {self.payment_method} ({self.quantity}x {self.item.name})'
