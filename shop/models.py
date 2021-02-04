@@ -20,6 +20,7 @@ class Purchase(models.Model):
         ('BC', 'Bitcoin'),
     ]
     payment_method = models.CharField(max_length=2, default='CC', choices=PAYMENT_METHODS)
+    time = models.DateTimeField(auto_now_add=True)
     successful = models.BooleanField(default=False)
 
     def __str__(self):

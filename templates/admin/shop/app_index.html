@@ -19,14 +19,37 @@
 
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <label for="year">Choose a year:</label>
-    <select name="year" id="year">
-        <option value="2021">2021</option>
-        <option value="2020">2020</option>
-        <option value="2019">2019</option>
-        <option value="2018">2018</option>
-    </select>
-    <input type="submit" value="Refresh">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <form id="filterForm">
+        <label for="year">Choose a year:</label>
+        <select name="year" id="year">
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+            <option value="2019">2019</option>
+            <option value="2018">2018</option>
+        </select>
+        <input type="submit" value="Load" name="_load">
+    </form>
+    <script>
+        $("#filterForm").on('submit', (event) => {
+            event.preventDefault();
+
+            const queryString = $('#filterForm').serialize();
+            const form = event.target.form;
+
+            console.log(queryString);
+
+
+            const data = new FormData(form);
+
+            console.log(data);
+
+            alert("bloop");
+        });
+    </script>
+    {# handle form load #}
+    {# handle form refresh #}
+    {# call ajax and load chart data #}
     <canvas id="salesChart"></canvas>
     <canvas id="spendPerCustomerChart"></canvas>
     <canvas id="paymentSuccessChart"></canvas>
