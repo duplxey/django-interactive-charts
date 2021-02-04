@@ -15,31 +15,33 @@
 {% endblock %}
 {% endif %}
 
-{% block sidebar %}{% endblock %}
+{% block sidebar %}This is the sidebar.{% endblock %}
 
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <label for="year">Choose a year:</label>
+    <select name="year" id="year">
+        <option value="2021">2021</option>
+        <option value="2020">2020</option>
+        <option value="2019">2019</option>
+        <option value="2018">2018</option>
+    </select>
+    <input type="submit" value="Refresh">
     <canvas id="salesChart"></canvas>
     <canvas id="spendPerCustomerChart"></canvas>
-    <div style="display: flex;">
-        <div style="width: 50%;">
-            <canvas id="paymentSuccessChart"></canvas>
-        </div>
-        <div style="width: 50%;">
-            <canvas id="paymentMethodChart"></canvas>
-        </div>
-    </div>
+    <canvas id="paymentSuccessChart"></canvas>
+    <canvas id="paymentMethodChart"></canvas>
     <script>
         const colorPalette = ["#79AEC8", "#ea9a81", "#d7c081", "#78d0a7", "#F1F4C6"];
 
         let salesCtx = document.getElementById('salesChart').getContext('2d');
         let salesChart = new Chart(salesCtx, {
             // The type of chart we want to create
-            type: 'line',
+            type: 'bar',
 
             // The data for our dataset
             data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 datasets: [{
                     label: 'My First dataset',
                     backgroundColor: '#79AEC8',
@@ -65,7 +67,7 @@
 
             // The data for our dataset
             data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 datasets: [{
                     label: 'My First dataset',
                     backgroundColor: '#79AEC8',
