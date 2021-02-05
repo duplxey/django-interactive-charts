@@ -2,7 +2,8 @@ import random
 from datetime import datetime, timedelta
 
 import pytz
-from django.db.models import Count
+from django.db.models import Count, F, Sum, Avg
+from django.db.models.functions import TruncMonth
 from django.http import JsonResponse
 from django.utils import timezone
 
@@ -29,30 +30,43 @@ def generate_color_palette(amount):
 
 def get_sales_chart(request, year):
     purchases = Purchase.objects.filter(time__year=year)
+    grouped_purchases = purchases.annotate(price=F('item__price')).annotate(month=TruncMonth('time'))\
+        .values('month').annotate(average=Sum('item__price')).values('month', 'average').order_by('month')
 
-    # print(
-    #     purchases
-    #         .annotate(price=F('item__price'))
-    #         .annotate(month=TruncMonth('time'))  # Truncate to month and add to select list
-    #         .values('month')                          # Group By month
-    #         .annotate(c=Count('id'))                  # Select the count of the grouping
-    #         .values('month', 'c', 'item__price', 'quantity').order_by()
-    # )
+    sales_dict = dict()
+
+    for month in months:
+        sales_dict[month] = 0
+
+    for group in grouped_purchases:
+        sales_dict[months[group['month'].month-1]] = round(group['average'], 2)
 
     return JsonResponse({
-        'labels': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        'backgroundColor': ['#79AEC8'],
-        'borderColor': ['#79AEC8'],
-        'data': [1, 2, 3, 4, 5],
+        'labels': list(sales_dict.keys()),
+        'backgroundColor': [colorPalette[0]],
+        'borderColor': [colorPalette[0]],
+        'data': list(sales_dict.values()),
     })
 
 
 def spend_per_customer_chart(request, year):
+    purchases = Purchase.objects.filter(time__year=year)
+    grouped_purchases = purchases.annotate(price=F('item__price')).annotate(month=TruncMonth('time'))\
+        .values('month').annotate(average=Avg('item__price')).values('month', 'average').order_by('month')
+
+    spend_per_customer_dict = dict()
+
+    for month in months:
+        spend_per_customer_dict[month] = 0
+
+    for group in grouped_purchases:
+        spend_per_customer_dict[months[group['month'].month-1]] = round(group['average'], 2)
+
     return JsonResponse({
-        'labels': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        'backgroundColor': ['#79AEC8'],
-        'borderColor': ['#79AEC8'],
-        'data': [1, 2, 3, 4, 5],
+        'labels': list(spend_per_customer_dict.keys()),
+        'backgroundColor': [colorPalette[0]],
+        'borderColor': [colorPalette[0]],
+        'data': list(spend_per_customer_dict.values()),
     })
 
 
@@ -77,12 +91,11 @@ def payment_method_chart(request, year):
 
     payment_method_dict = dict()
 
+    for payment_method in Purchase.PAYMENT_METHODS:
+        payment_method_dict[payment_method[1]] = 0
+
     for group in grouped_purchases:
         payment_method_dict[dict(Purchase.PAYMENT_METHODS)[group['payment_method']]] = group['count']
-
-    for payment_method in Purchase.PAYMENT_METHODS:
-        if payment_method[1] not in payment_method_dict:
-            payment_method_dict[payment_method[1]] = 0
 
     return JsonResponse({
         'labels': list(payment_method_dict.keys()),

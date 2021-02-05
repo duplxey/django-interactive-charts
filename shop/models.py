@@ -14,7 +14,6 @@ class Item(models.Model):
 class Purchase(models.Model):
     customer_full_name = models.CharField(max_length=64)
     item = models.ForeignKey(to=Item, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
     PAYMENT_METHODS = [
         ('CC', 'Credit card'),
         ('DC', 'Debit card'),
@@ -35,4 +34,4 @@ class Purchase(models.Model):
         super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-        return f'{self.customer_full_name}, {self.payment_method} ({self.quantity}x {self.item.name})'
+        return f'{self.customer_full_name}, {self.payment_method} ({self.item.name})'
