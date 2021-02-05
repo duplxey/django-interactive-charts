@@ -20,18 +20,35 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
     <form id="filterForm">
         <label for="year">Choose a year:</label>
-        <select name="year" id="year">
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-            <option value="2019">2019</option>
-            <option value="2018">2018</option>
-            <option value="2017">2017</option>
-            <option value="2016">2016</option>
-        </select>
+        <select name="year" id="year"></select>
         <input type="submit" value="Load" name="_load">
     </form>
     <script>
-        function fetchAndUpdate(chart, endpoint) {
+        $(document).ready(function() {
+            $.ajax({
+                url: "/shop/chart/filter-options/",
+                type: "GET",
+                dataType: "json",
+                success: (jsonResponse) => {
+                    // Load all the options
+                    jsonResponse.options.forEach(option => {
+                        $("#year").append(new Option(option, option));
+                    });
+                    // Load data for the first option
+                    loadAllCharts($("#year").children().first().val());
+                },
+                error: () => console.log("Failed to fetch chart filter options!")
+            });
+        });
+
+        $("#filterForm").on('submit', (event) => {
+            event.preventDefault();
+
+            const year = $("#year").val();
+            loadAllCharts(year)
+        });
+
+        function loadChart(chart, endpoint) {
             $.ajax({
                 url: endpoint,
                 type: "GET",
@@ -58,23 +75,12 @@
             });
         }
 
-        function fetchAndUpdateAll(year) {
-            fetchAndUpdate(salesChart, `/shop/chart/sales/${year}/`);
-            fetchAndUpdate(spendPerCustomerChart, `/shop/chart/spend-per-customer/${year}/`);
-            fetchAndUpdate(paymentSuccessChart, `/shop/chart/payment-success/${year}/`);
-            fetchAndUpdate(paymentMethodChart, `/shop/chart/payment-method/${year}/`);
+        function loadAllCharts(year) {
+            loadChart(salesChart, `/shop/chart/sales/${year}/`);
+            loadChart(spendPerCustomerChart, `/shop/chart/spend-per-customer/${year}/`);
+            loadChart(paymentSuccessChart, `/shop/chart/payment-success/${year}/`);
+            loadChart(paymentMethodChart, `/shop/chart/payment-method/${year}/`);
         }
-
-        $(document).ready(function() {
-            fetchAndUpdateAll($("#year").children().first().val());
-        });
-
-        $("#filterForm").on('submit', (event) => {
-            event.preventDefault();
-
-            const year = $("#year").val();
-            fetchAndUpdateAll(year)
-        });
     </script>
     <canvas id="salesChart"></canvas>
     <canvas id="spendPerCustomerChart"></canvas>

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import pytz
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count, F, Sum, Avg
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, ExtractYear
 from django.http import JsonResponse
 from django.utils import timezone
 
@@ -27,6 +27,21 @@ def generate_color_palette(amount):
         if i == len(colorPalette) and len(palette) < amount:
             i = 0
     return palette
+
+
+@staff_member_required
+def get_filter_options(request):
+    grouped_purchases = Purchase.objects.annotate(year=ExtractYear('time'))\
+        .values('year').order_by('-year').distinct()
+
+    options = []
+
+    for purchase in grouped_purchases:
+        options.append(purchase['year'])
+
+    return JsonResponse({
+        'options': options,
+    })
 
 
 @staff_member_required
