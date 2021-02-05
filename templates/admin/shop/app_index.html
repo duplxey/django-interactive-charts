@@ -31,21 +31,34 @@
         <input type="submit" value="Load" name="_load">
     </form>
     <script>
+        function fetchAndUpdate(chart, endpoint) {
+            $.ajax({
+                url: endpoint,
+                type: "GET",
+                dataType: "json",
+                success: (data) => {
+                    console.log(data);
+                    chart.options.title.text = data.title;
+                    chart.data.datasets.forEach((dataset) => {
+                        dataset.data = data.data;
+                        dataset.backgroundColor = data.backgroundColor;
+                        dataset.borderColor = data.borderColor;
+                        dataset.labels = data.labels;
+                    });
+                    chart.update();
+                },
+                error: () => console.log("Failed to fetch chart data from " + endpoint + "!")
+            });
+        }
+
         $("#filterForm").on('submit', (event) => {
             event.preventDefault();
 
-            const queryString = $('#filterForm').serialize();
-            const form = event.target.form;
-
-
-            console.log(queryString);
-
-
-            const data = new FormData(form);
-
-            console.log(data);
-
-            alert("bloop");
+            const year = $("#year").val();
+            fetchAndUpdate(salesChart, `/shop/chart/sales/${year}/`);
+            fetchAndUpdate(spendPerCustomerChart, `/shop/chart/spend-per-customer/${year}/`);
+            fetchAndUpdate(paymentSuccessChart, `/shop/chart/payment-success/${year}/`);
+            fetchAndUpdate(paymentMethodChart, `/shop/chart/payment-method/${year}/`);
         });
     </script>
     {# handle form load #}
@@ -67,7 +80,7 @@
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 datasets: [{
-                    label: 'My First dataset',
+                    label: 'Amount ($)',
                     backgroundColor: '#79AEC8',
                     borderColor: '#79AEC8',
                     data: [0, 10, 5, 2, 20, 30, 45]
@@ -93,7 +106,7 @@
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 datasets: [{
-                    label: 'My First dataset',
+                    label: 'Amount ($)',
                     backgroundColor: '#79AEC8',
                     borderColor: '#79AEC8',
                     data: [0, 10, 5, 2, 20, 30, 45]

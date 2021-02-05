@@ -2,6 +2,7 @@ import random
 from datetime import datetime, timedelta
 
 import pytz
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count, F, Sum, Avg
 from django.db.models.functions import TruncMonth
 from django.http import JsonResponse
@@ -12,9 +13,9 @@ from shop.models import Purchase, Item
 months = ['January', 'February', 'March', 'April', 'May', 'June',
           'July', 'August', 'September', 'October', 'November', 'December']
 
-colorPalette = ["#55efc4", "#81ecec", "#74b9ff", "#a29bfe", "#ffeaa7", "#fab1a0", "#ff7675", "#fd79a8"]
-colorSuccess = colorPalette[0]
-colorDanger = colorSuccess[6]
+colorPalette = ["#79aec8", "#55efc4", "#81ecec", "#74b9ff", "#a29bfe", "#ffeaa7", "#fab1a0", "#ff7675", "#fd79a8"]
+colorSuccess = colorPalette[1]
+colorDanger = colorPalette[7]
 
 
 def generate_color_palette(amount):
@@ -28,6 +29,7 @@ def generate_color_palette(amount):
     return palette
 
 
+@staff_member_required
 def get_sales_chart(request, year):
     purchases = Purchase.objects.filter(time__year=year)
     grouped_purchases = purchases.annotate(price=F('item__price')).annotate(month=TruncMonth('time'))\
@@ -42,13 +44,15 @@ def get_sales_chart(request, year):
         sales_dict[months[group['month'].month-1]] = round(group['average'], 2)
 
     return JsonResponse({
+        'title': f'Sales in {year}',
         'labels': list(sales_dict.keys()),
-        'backgroundColor': [colorPalette[0]],
-        'borderColor': [colorPalette[0]],
+        'backgroundColor': colorPalette[0],
+        'borderColor': colorPalette[0],
         'data': list(sales_dict.values()),
     })
 
 
+@staff_member_required
 def spend_per_customer_chart(request, year):
     purchases = Purchase.objects.filter(time__year=year)
     grouped_purchases = purchases.annotate(price=F('item__price')).annotate(month=TruncMonth('time'))\
@@ -64,19 +68,20 @@ def spend_per_customer_chart(request, year):
 
     return JsonResponse({
         'labels': list(spend_per_customer_dict.keys()),
-        'backgroundColor': [colorPalette[0]],
-        'borderColor': [colorPalette[0]],
+        'backgroundColor': colorPalette[0],
+        'borderColor': colorPalette[0],
         'data': list(spend_per_customer_dict.values()),
     })
 
 
+@staff_member_required
 def payment_success_chart(request, year):
     purchases = Purchase.objects.filter(time__year=year)
 
     return JsonResponse({
         'labels': ['Successful', 'Unsuccessful'],
-        'backgroundColor': [colorSuccess, colorSuccess],
-        'borderColor': [colorDanger, colorDanger],
+        'backgroundColor': [colorSuccess, colorDanger],
+        'borderColor': [colorSuccess, colorDanger],
         'data': [
             purchases.filter(successful=True).count(),
             purchases.filter(successful=False).count(),
@@ -84,6 +89,7 @@ def payment_success_chart(request, year):
     })
 
 
+@staff_member_required
 def payment_method_chart(request, year):
     purchases = Purchase.objects.filter(time__year=year)
     grouped_purchases = purchases.values('payment_method').annotate(count=Count('id'))\
@@ -105,6 +111,7 @@ def payment_method_chart(request, year):
     })
 
 
+@staff_member_required
 def generate(request):
     if Purchase.objects.count() > 50:
         return JsonResponse({'detail': 'generate() has already been run.'})
