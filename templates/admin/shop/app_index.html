@@ -36,14 +36,13 @@
                 url: endpoint,
                 type: "GET",
                 dataType: "json",
-                success: (data) => {
-                    console.log(data);
-                    chart.options.title.text = data.title;
-                    chart.data.datasets.forEach((dataset) => {
-                        dataset.data = data.data;
-                        dataset.backgroundColor = data.backgroundColor;
-                        dataset.borderColor = data.borderColor;
-                        dataset.labels = data.labels;
+                success: (jsonResponse) => {
+                    const title = jsonResponse.title;
+                    const datasets = jsonResponse.data.datasets;
+                    chart.data.datasets = [];
+                    chart.options.title.text = title;
+                    datasets.forEach(dataset => {
+                        chart.data.datasets.push(dataset);
                     });
                     chart.update();
                 },
@@ -55,6 +54,7 @@
             event.preventDefault();
 
             const year = $("#year").val();
+
             fetchAndUpdate(salesChart, `/shop/chart/sales/${year}/`);
             fetchAndUpdate(spendPerCustomerChart, `/shop/chart/spend-per-customer/${year}/`);
             fetchAndUpdate(paymentSuccessChart, `/shop/chart/payment-success/${year}/`);
@@ -79,12 +79,7 @@
             // The data for our dataset
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: [{
-                    label: 'Amount ($)',
-                    backgroundColor: '#79AEC8',
-                    borderColor: '#79AEC8',
-                    data: [0, 10, 5, 2, 20, 30, 45]
-                }]
+                datasets: []
             },
 
             // Configuration options go here
@@ -105,12 +100,7 @@
             // The data for our dataset
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: [{
-                    label: 'Amount ($)',
-                    backgroundColor: '#79AEC8',
-                    borderColor: '#79AEC8',
-                    data: [0, 10, 5, 2, 20, 30, 45]
-                }]
+                datasets: []
             },
 
             // Configuration options go here
@@ -131,12 +121,7 @@
             // The data for our dataset
             data: {
                 labels: ['Successful', 'Unsuccessful'],
-                datasets: [{
-                    label: 'My First dataset',
-                    backgroundColor: [colorPalette[0], colorPalette[1]],
-                    borderColor: [colorPalette[0], colorPalette[1]],
-                    data: [10, 2]
-                }]
+                datasets: []
             },
 
             // Configuration options go here
@@ -157,12 +142,7 @@
             // The data for our dataset
             data: {
                 labels: ['Credit card', 'Credit card', 'Bitcoin'],
-                datasets: [{
-                    label: 'My First dataset',
-                    backgroundColor: [colorPalette[0], colorPalette[1], colorPalette[2]],
-                    borderColor: [colorPalette[0], colorPalette[1], colorPalette[2]],
-                    data: [1, 10, 5]
-                }]
+                datasets: []
             },
 
             // Configuration options go here

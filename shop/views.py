@@ -45,10 +45,15 @@ def get_sales_chart(request, year):
 
     return JsonResponse({
         'title': f'Sales in {year}',
-        'labels': list(sales_dict.keys()),
-        'backgroundColor': colorPalette[0],
-        'borderColor': colorPalette[0],
-        'data': list(sales_dict.values()),
+        'data': {
+            'labels': list(sales_dict.keys()),
+            'datasets': [{
+                'label': 'Amount ($)',
+                'backgroundColor': colorPalette[0],
+                'borderColor': colorPalette[0],
+                'data': list(sales_dict.values()),
+            }]
+        },
     })
 
 
@@ -67,10 +72,16 @@ def spend_per_customer_chart(request, year):
         spend_per_customer_dict[months[group['month'].month-1]] = round(group['average'], 2)
 
     return JsonResponse({
-        'labels': list(spend_per_customer_dict.keys()),
-        'backgroundColor': colorPalette[0],
-        'borderColor': colorPalette[0],
-        'data': list(spend_per_customer_dict.values()),
+        'title': f'Spend per customer in {year}',
+        'data': {
+            'labels': list(spend_per_customer_dict.keys()),
+            'datasets': [{
+                'label': 'Amount ($)',
+                'backgroundColor': colorPalette[0],
+                'borderColor': colorPalette[0],
+                'data': list(spend_per_customer_dict.values()),
+            }]
+        },
     })
 
 
@@ -79,13 +90,19 @@ def payment_success_chart(request, year):
     purchases = Purchase.objects.filter(time__year=year)
 
     return JsonResponse({
-        'labels': ['Successful', 'Unsuccessful'],
-        'backgroundColor': [colorSuccess, colorDanger],
-        'borderColor': [colorSuccess, colorDanger],
-        'data': [
-            purchases.filter(successful=True).count(),
-            purchases.filter(successful=False).count(),
-        ],
+        'title': f'Payment success rate in {year}',
+        'data': {
+            'labels': ['Successful', 'Unsuccessful'],
+            'datasets': [{
+                'label': 'Amount ($)',
+                'backgroundColor': [colorSuccess, colorDanger],
+                'borderColor': [colorSuccess, colorDanger],
+                'data': [
+                    purchases.filter(successful=True).count(),
+                    purchases.filter(successful=False).count(),
+                ],
+            }]
+        },
     })
 
 
@@ -104,10 +121,16 @@ def payment_method_chart(request, year):
         payment_method_dict[dict(Purchase.PAYMENT_METHODS)[group['payment_method']]] = group['count']
 
     return JsonResponse({
-        'labels': list(payment_method_dict.keys()),
-        'backgroundColor': generate_color_palette(len(payment_method_dict)),
-        'borderColor': generate_color_palette(len(payment_method_dict)),
-        'data': list(payment_method_dict.values()),
+        'title': f'Payment methods in {year}',
+        'data': {
+            'labels': list(payment_method_dict.keys()),
+            'datasets': [{
+                'label': 'Amount ($)',
+                'backgroundColor': generate_color_palette(len(payment_method_dict)),
+                'borderColor': generate_color_palette(len(payment_method_dict)),
+                'data': list(payment_method_dict.values()),
+            }]
+        },
     })
 
 
