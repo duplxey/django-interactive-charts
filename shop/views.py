@@ -13,9 +13,10 @@ from shop.models import Purchase, Item
 months = ['January', 'February', 'March', 'April', 'May', 'June',
           'July', 'August', 'September', 'October', 'November', 'December']
 
-colorPalette = ["#79aec8", "#55efc4", "#81ecec", "#74b9ff", "#a29bfe", "#ffeaa7", "#fab1a0", "#ff7675", "#fd79a8"]
-colorSuccess = colorPalette[1]
-colorDanger = colorPalette[7]
+colorPalette = ["#55efc4", "#81ecec", "#a29bfe", "#ffeaa7", "#fab1a0", "#ff7675", "#fd79a8"]
+colorPrimary = "#79aec8"
+colorSuccess = colorPalette[0]
+colorDanger = colorPalette[5]
 
 
 def generate_color_palette(amount):
@@ -64,8 +65,8 @@ def get_sales_chart(request, year):
             'labels': list(sales_dict.keys()),
             'datasets': [{
                 'label': 'Amount ($)',
-                'backgroundColor': colorPalette[0],
-                'borderColor': colorPalette[0],
+                'backgroundColor': colorPrimary,
+                'borderColor': colorPrimary,
                 'data': list(sales_dict.values()),
             }]
         },
@@ -92,8 +93,8 @@ def spend_per_customer_chart(request, year):
             'labels': list(spend_per_customer_dict.keys()),
             'datasets': [{
                 'label': 'Amount ($)',
-                'backgroundColor': colorPalette[0],
-                'borderColor': colorPalette[0],
+                'backgroundColor': colorPrimary,
+                'borderColor': colorPrimary,
                 'data': list(spend_per_customer_dict.values()),
             }]
         },

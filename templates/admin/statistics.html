@@ -1,23 +1,9 @@
-{% extends "admin/index.html" %}
-{% load i18n %}
-
-{% block bodyclass %}{{ block.super }} app-{{ app_label }}{% endblock %}
-
-{% if not is_popup %}
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
-&rsaquo;
-{% for app in app_list %}
-{{ app.name }}
-{% endfor %}
-</div>
-{% endblock %}
-{% endif %}
+{% extends "admin/base_site.html" %}
 
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-v4-grid-only@1.0.0/dist/bootstrap-grid.min.css">
     <form id="filterForm">
         <label for="year">Choose a year:</label>
         <select name="year" id="year"></select>
@@ -82,10 +68,16 @@
             loadChart(paymentMethodChart, `/shop/chart/payment-method/${year}/`);
         }
     </script>
-    <canvas id="salesChart"></canvas>
-    <canvas id="spendPerCustomerChart"></canvas>
-    <canvas id="paymentSuccessChart"></canvas>
-    <canvas id="paymentMethodChart"></canvas>
+    <div class="row">
+        <div class="col">
+            <canvas id="salesChart"></canvas>
+            <canvas id="spendPerCustomerChart"></canvas>
+        </div>
+        <div class="col">
+            <canvas id="paymentSuccessChart"></canvas>
+            <canvas id="paymentMethodChart"></canvas>
+        </div>
+    </div>
     <script>
         let salesCtx = document.getElementById('salesChart').getContext('2d');
         let salesChart = new Chart(salesCtx, {
@@ -117,6 +109,14 @@
                 title: {
                     text: 'Spend per customer',
                     display: true
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 25
+                    }
                 }
             }
         });
@@ -128,11 +128,16 @@
                 title: {
                     text: 'Payment method',
                     display: true
+                },
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 25
+                    }
                 }
             }
         });
     </script>
-    <div id="content-main">
-      {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
-    </div>
 {% endblock %}
