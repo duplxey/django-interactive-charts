@@ -15,8 +15,6 @@
 {% endblock %}
 {% endif %}
 
-{% block sidebar %}This is the sidebar.{% endblock %}
-
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
@@ -27,6 +25,8 @@
             <option value="2020">2020</option>
             <option value="2019">2019</option>
             <option value="2018">2018</option>
+            <option value="2017">2017</option>
+            <option value="2016">2016</option>
         </select>
         <input type="submit" value="Load" name="_load">
     </form>
@@ -37,10 +37,18 @@
                 type: "GET",
                 dataType: "json",
                 success: (jsonResponse) => {
+                    // Extract data from the response
                     const title = jsonResponse.title;
+                    const labels = jsonResponse.data.labels;
                     const datasets = jsonResponse.data.datasets;
+
+                    // Reset the current chart
                     chart.data.datasets = [];
+                    chart.data.labels = [];
+
+                    // Load new data into the chart
                     chart.options.title.text = title;
+                    chart.data.labels = labels;
                     datasets.forEach(dataset => {
                         chart.data.datasets.push(dataset);
                     });
@@ -50,107 +58,70 @@
             });
         }
 
-        $("#filterForm").on('submit', (event) => {
-            event.preventDefault();
-
-            const year = $("#year").val();
-
+        function fetchAndUpdateAll(year) {
             fetchAndUpdate(salesChart, `/shop/chart/sales/${year}/`);
             fetchAndUpdate(spendPerCustomerChart, `/shop/chart/spend-per-customer/${year}/`);
             fetchAndUpdate(paymentSuccessChart, `/shop/chart/payment-success/${year}/`);
             fetchAndUpdate(paymentMethodChart, `/shop/chart/payment-method/${year}/`);
+        }
+
+        $(document).ready(function() {
+            fetchAndUpdateAll($("#year").children().first().val());
+        });
+
+        $("#filterForm").on('submit', (event) => {
+            event.preventDefault();
+
+            const year = $("#year").val();
+            fetchAndUpdateAll(year)
         });
     </script>
-    {# handle form load #}
-    {# handle form refresh #}
-    {# call ajax and load chart data #}
     <canvas id="salesChart"></canvas>
     <canvas id="spendPerCustomerChart"></canvas>
     <canvas id="paymentSuccessChart"></canvas>
     <canvas id="paymentMethodChart"></canvas>
     <script>
-        const colorPalette = ["#79AEC8", "#ea9a81", "#d7c081", "#78d0a7", "#F1F4C6"];
-
         let salesCtx = document.getElementById('salesChart').getContext('2d');
         let salesChart = new Chart(salesCtx, {
-            // The type of chart we want to create
             type: 'bar',
-
-            // The data for our dataset
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: []
-            },
-
-            // Configuration options go here
             options: {
                 responsive: true,
                 title: {
-                    display: true,
-                    text: 'Sales'
+                    text: "",
+                    display: true
                 }
             }
         });
-
         let spendPerCustomerCtx = document.getElementById('spendPerCustomerChart').getContext('2d');
         let spendPerCustomerChart = new Chart(spendPerCustomerCtx, {
-            // The type of chart we want to create
             type: 'line',
-
-            // The data for our dataset
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                datasets: []
-            },
-
-            // Configuration options go here
             options: {
                 responsive: true,
                 title: {
-                    display: true,
-                    text: 'Spend per customer'
+                    text: 'Spend per customer',
+                    display: true
                 }
             }
         });
-
         let paymentSuccessCtx = document.getElementById('paymentSuccessChart').getContext('2d');
         let paymentSuccessChart = new Chart(paymentSuccessCtx, {
-            // The type of chart we want to create
             type: 'pie',
-
-            // The data for our dataset
-            data: {
-                labels: ['Successful', 'Unsuccessful'],
-                datasets: []
-            },
-
-            // Configuration options go here
             options: {
                 responsive: true,
                 title: {
-                    display: true,
-                    text: 'Spend per customer'
+                    text: 'Spend per customer',
+                    display: true
                 }
             }
         });
-
         let paymentMethodCtx = document.getElementById('paymentMethodChart').getContext('2d');
         let paymentMethodChart = new Chart(paymentMethodCtx, {
-            // The type of chart we want to create
             type: 'pie',
-
-            // The data for our dataset
-            data: {
-                labels: ['Credit card', 'Credit card', 'Bitcoin'],
-                datasets: []
-            },
-
-            // Configuration options go here
             options: {
                 responsive: true,
                 title: {
-                    display: true,
-                    text: 'Payment method'
+                    text: 'Payment method',
+                    display: true
                 }
             }
         });

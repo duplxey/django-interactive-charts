@@ -121,7 +121,7 @@ def payment_method_chart(request, year):
         payment_method_dict[dict(Purchase.PAYMENT_METHODS)[group['payment_method']]] = group['count']
 
     return JsonResponse({
-        'title': f'Payment methods in {year}',
+        'title': f'Payment method rate in {year}',
         'data': {
             'labels': list(payment_method_dict.keys()),
             'datasets': [{
