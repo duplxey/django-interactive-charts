@@ -6,12 +6,12 @@ from django.urls import path
 
 @staff_member_required
 def admin_statistics_view(request):
-    return render(request, 'admin/statistics.html', {
+    return render(request, 'shop/admin/statistics.html', {
         'title': 'Statistics'
     })
 
 
-class MyAdminSite(admin.AdminSite):
+class CustomAdminSite(admin.AdminSite):
     def get_app_list(self, request):
         app_list = super().get_app_list(request)
         app_list += [

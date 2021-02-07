@@ -1,44 +1,16 @@
-import random
-from datetime import datetime, timedelta
-
-import pytz
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count, F, Sum, Avg
-from django.db.models.functions import TruncMonth, ExtractYear
+from django.db.models.functions import ExtractYear, ExtractMonth
 from django.http import JsonResponse
-from django.utils import timezone
 
-from shop.models import Purchase, Item
-
-months = ['January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December']
-
-colorPalette = ["#55efc4", "#81ecec", "#a29bfe", "#ffeaa7", "#fab1a0", "#ff7675", "#fd79a8"]
-colorPrimary = "#79aec8"
-colorSuccess = colorPalette[0]
-colorDanger = colorPalette[5]
-
-
-def generate_color_palette(amount):
-    palette = []
-    i = 0
-    while i < len(colorPalette) and len(palette) < amount:
-        palette.append(colorPalette[i])
-        i += 1
-        if i == len(colorPalette) and len(palette) < amount:
-            i = 0
-    return palette
+from shop.models import Purchase
+from util.charts import months, colorPrimary, colorSuccess, colorDanger, generate_color_palette, get_year_dict
 
 
 @staff_member_required
 def get_filter_options(request):
-    grouped_purchases = Purchase.objects.annotate(year=ExtractYear('time'))\
-        .values('year').order_by('-year').distinct()
-
-    options = []
-
-    for purchase in grouped_purchases:
-        options.append(purchase['year'])
+    grouped_purchases = Purchase.objects.annotate(year=ExtractYear('time')).values('year').order_by('-year').distinct()
+    options = [purchase['year'] for purchase in grouped_purchases]
 
     return JsonResponse({
         'options': options,
@@ -48,16 +20,13 @@ def get_filter_options(request):
 @staff_member_required
 def get_sales_chart(request, year):
     purchases = Purchase.objects.filter(time__year=year)
-    grouped_purchases = purchases.annotate(price=F('item__price')).annotate(month=TruncMonth('time'))\
+    grouped_purchases = purchases.annotate(price=F('item__price')).annotate(month=ExtractMonth('time'))\
         .values('month').annotate(average=Sum('item__price')).values('month', 'average').order_by('month')
 
-    sales_dict = dict()
-
-    for month in months:
-        sales_dict[month] = 0
+    sales_dict = get_year_dict()
 
     for group in grouped_purchases:
-        sales_dict[months[group['month'].month-1]] = round(group['average'], 2)
+        sales_dict[months[group['month']-1]] = round(group['average'], 2)
 
     return JsonResponse({
         'title': f'Sales in {year}',
@@ -76,16 +45,13 @@ def get_sales_chart(request, year):
 @staff_member_required
 def spend_per_customer_chart(request, year):
     purchases = Purchase.objects.filter(time__year=year)
-    grouped_purchases = purchases.annotate(price=F('item__price')).annotate(month=TruncMonth('time'))\
+    grouped_purchases = purchases.annotate(price=F('item__price')).annotate(month=ExtractMonth('time'))\
         .values('month').annotate(average=Avg('item__price')).values('month', 'average').order_by('month')
 
-    spend_per_customer_dict = dict()
-
-    for month in months:
-        spend_per_customer_dict[month] = 0
+    spend_per_customer_dict = get_year_dict()
 
     for group in grouped_purchases:
-        spend_per_customer_dict[months[group['month'].month-1]] = round(group['average'], 2)
+        spend_per_customer_dict[months[group['month']-1]] = round(group['average'], 2)
 
     return JsonResponse({
         'title': f'Spend per customer in {year}',
@@ -148,33 +114,3 @@ def payment_method_chart(request, year):
             }]
         },
     })
-
-
-@staff_member_required
-def generate(request):
-    if Purchase.objects.count() > 50:
-        return JsonResponse({'detail': 'generate() has already been run.'})
-
-    names = ["Jack", "John", "Mike", "Chris", "Kyle"]
-    surname = ["Jackson", "Smith", "Tyson", "Musk", "Gates"]
-    items = [
-        Item.objects.create(name="Socks", price=6.5), Item.objects.create(name="Pants", price=12),
-        Item.objects.create(name="T-Shirt", price=8), Item.objects.create(name="Boots", price=9),
-        Item.objects.create(name="Sweater", price=3), Item.objects.create(name="Underwear", price=9),
-        Item.objects.create(name="Cap", price=5), Item.objects.create(name="Leggings", price=7),
-    ]
-
-    for i in range(0, 2500):
-        dt = pytz.utc.localize(datetime.now() - timedelta(days=random.randint(0, 1825)))
-        purchase = Purchase.objects.create(
-            customer_full_name=names[random.randint(0, len(names)-1)] + " " + surname[random.randint(0, len(surname)-1)],
-            item=items[random.randint(0, 2)],
-            quantity=random.randint(1, 5),
-            payment_method=Purchase.PAYMENT_METHODS[random.randint(0, 2)][0],
-            time=timezone.now(),
-            successful=True if random.randint(1, 2) == 1 else False,
-        )
-        purchase.time = dt
-        purchase.save()
-
-    return JsonResponse({'detail': 'Generated.'})

@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 
 
 class Item(models.Model):
@@ -21,17 +20,11 @@ class Purchase(models.Model):
         ('BC', 'Bitcoin'),
     ]
     payment_method = models.CharField(max_length=2, default='CC', choices=PAYMENT_METHODS)
-    time = models.DateTimeField(auto_now_add=False)
+    time = models.DateTimeField(auto_now_add=True)
     successful = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-time']
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.pk is None:
-            self.time = timezone.now()
-
-        super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
         return f'{self.customer_full_name}, {self.payment_method} ({self.item.name})'
