@@ -51,6 +51,7 @@
 
                     // Load new data into the chart
                     chart.options.title.text = title;
+                    chart.options.title.display = true;
                     chart.data.labels = labels;
                     datasets.forEach(dataset => {
                         chart.data.datasets.push(dataset);
@@ -88,10 +89,6 @@
             type: 'bar',
             options: {
                 responsive: true,
-                title: {
-                    text: "",
-                    display: true
-                }
             }
         });
         let spendPerCustomerCtx = document.getElementById('spendPerCustomerChart').getContext('2d');
@@ -99,10 +96,6 @@
             type: 'line',
             options: {
                 responsive: true,
-                title: {
-                    text: 'Spend per customer',
-                    display: true
-                }
             }
         });
         let paymentSuccessCtx = document.getElementById('paymentSuccessChart').getContext('2d');
@@ -110,10 +103,6 @@
             type: 'pie',
             options: {
                 responsive: true,
-                title: {
-                    text: 'Spend per customer',
-                    display: true
-                },
                 layout: {
                     padding: {
                         left: 0,
@@ -129,10 +118,6 @@
             type: 'pie',
             options: {
                 responsive: true,
-                title: {
-                    text: 'Payment method',
-                    display: true
-                },
                 layout: {
                     padding: {
                         left: 0,
