@@ -1,3 +1,5 @@
+# core/apps.py
+
 from django.contrib.admin.apps import AdminConfig
 
 

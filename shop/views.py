@@ -1,10 +1,13 @@
+# shop/views.py
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count, F, Sum, Avg
 from django.db.models.functions import ExtractYear, ExtractMonth
 from django.http import JsonResponse
+from django.shortcuts import render
 
 from shop.models import Purchase
-from util.charts import months, colorPrimary, colorSuccess, colorDanger, generate_color_palette, get_year_dict
+from utils.charts import months, colorPrimary, colorSuccess, colorDanger, generate_color_palette, get_year_dict
 
 
 @staff_member_required
@@ -114,3 +117,8 @@ def payment_method_chart(request, year):
             }]
         },
     })
+
+
+@staff_member_required
+def statistics_view(request):
+    return render(request, 'statistics.html', {})
