@@ -1,3 +1,5 @@
+# shop/management/commands/populate_db.py
+
 import random
 from datetime import datetime, timedelta
 

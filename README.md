@@ -25,17 +25,22 @@ Check out the [post](x).
     ```sh
     (venv)$ python manage.py migrate
     ```
-    
+
 1. Populate the database with randomly generated data (amount = number of purchases):
 
     ```sh
     (venv)$ python manage.py populate_db --amount 2500
     ```
 
-1. Run the server:
+1. Create a superuser, and run the server:
 
     ```sh
+    (venv)$ python manage.py createsuperuser
     (venv)$ python manage.py runserver
     ```
-   
-1. Visit [http://localhost:8000/admin/statistics/](http://localhost:8000/admin/statistics/) to see the charts.
+
+1. You can then see the charts here:
+
+    - [http://127.0.0.1:8000/shop/statistics/](http://127.0.0.1:8000/shop/statistics/) - stats view
+    - [http://127.0.0.1:8000/admin/statistics/](http://127.0.0.1:8000/admin/statistics/) - new admin view
+    - [http://127.0.0.1:8000/admin/shop/](http://127.0.0.1:0000/admin/shop/) - extended admin view
