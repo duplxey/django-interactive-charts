@@ -2,7 +2,7 @@
 
 ## Want to learn how to build this?
 
-Check out the [post](x).
+Check out the [post](https://testdriven.io/blog/django-charts/).
 
 ## Want to use this project?
 
