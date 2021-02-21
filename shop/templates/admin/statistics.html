@@ -28,7 +28,7 @@
     });
   });
 
-  $("#filterForm").on('submit', (event) => {
+  $("#filterForm").on("submit", (event) => {
     event.preventDefault();
 
     const year = $("#year").val();
@@ -85,23 +85,23 @@
   </div>
 </div>
 <script>
-  let salesCtx = document.getElementById('salesChart').getContext('2d');
+  let salesCtx = document.getElementById("salesChart").getContext("2d");
   let salesChart = new Chart(salesCtx, {
-    type: 'bar',
+    type: "bar",
     options: {
       responsive: true,
     }
   });
-  let spendPerCustomerCtx = document.getElementById('spendPerCustomerChart').getContext('2d');
+  let spendPerCustomerCtx = document.getElementById("spendPerCustomerChart").getContext("2d");
   let spendPerCustomerChart = new Chart(spendPerCustomerCtx, {
-    type: 'line',
+    type: "line",
     options: {
       responsive: true,
     }
   });
-  let paymentSuccessCtx = document.getElementById('paymentSuccessChart').getContext('2d');
+  let paymentSuccessCtx = document.getElementById("paymentSuccessChart").getContext("2d");
   let paymentSuccessChart = new Chart(paymentSuccessCtx, {
-    type: 'pie',
+    type: "pie",
     options: {
       responsive: true,
       layout: {
@@ -114,9 +114,9 @@
       }
     }
   });
-  let paymentMethodCtx = document.getElementById('paymentMethodChart').getContext('2d');
+  let paymentMethodCtx = document.getElementById("paymentMethodChart").getContext("2d");
   let paymentMethodChart = new Chart(paymentMethodCtx, {
-    type: 'pie',
+    type: "pie",
     options: {
       responsive: true,
       layout: {
