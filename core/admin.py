@@ -14,7 +14,7 @@ def admin_statistics_view(request):
 
 
 class CustomAdminSite(admin.AdminSite):
-    def get_app_list(self, request):
+    def get_app_list(self, request, _=None):
         app_list = super().get_app_list(request)
         app_list += [
             {

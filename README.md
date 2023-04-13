@@ -43,4 +43,4 @@ Check out the [post](https://testdriven.io/blog/django-charts/).
 
     - [http://127.0.0.1:8000/shop/statistics/](http://127.0.0.1:8000/shop/statistics/) - stats view
     - [http://127.0.0.1:8000/admin/statistics/](http://127.0.0.1:8000/admin/statistics/) - new admin view
-    - [http://127.0.0.1:8000/admin/shop/](http://127.0.0.1:0000/admin/shop/) - extended admin view
+    - [http://127.0.0.1:8000/admin/shop/](http://127.0.0.1:8000/admin/shop/) - extended admin view
