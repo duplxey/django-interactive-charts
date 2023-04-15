@@ -1,14 +1,12 @@
-<!-- shop/templates/statistics.html -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Statistics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
     <script
-        src="https://code.jquery.com/jquery-3.6.4.min.js"
-        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
-        crossorigin="anonymous">
+      src="https://code.jquery.com/jquery-3.6.4.min.js"
+      integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+      crossorigin="anonymous">
     </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-v4-grid-only@1.0.0/dist/bootstrap-grid.min.css">
   </head>
@@ -51,47 +49,47 @@
           });
         });
 
-      $("#filterForm").on("submit", (event) => {
-        event.preventDefault();
+        $("#filterForm").on("submit", (event) => {
+          event.preventDefault();
 
-        const year = $("#year").val();
-        loadAllCharts(year)
-      });
-
-      function loadChart(chart, endpoint) {
-        $.ajax({
-          url: endpoint,
-          type: "GET",
-          dataType: "json",
-          success: (jsonResponse) => {
-            // Extract data from the response
-            const title = jsonResponse.title;
-            const labels = jsonResponse.data.labels;
-            const datasets = jsonResponse.data.datasets;
-
-            // Reset the current chart
-            chart.data.datasets = [];
-            chart.data.labels = [];
-
-            // Load new data into the chart
-            chart.options.title.text = title;
-            chart.options.title.display = true;
-            chart.data.labels = labels;
-            datasets.forEach(dataset => {
-              chart.data.datasets.push(dataset);
-            });
-            chart.update();
-          },
-          error: () => console.log("Failed to fetch chart data from " + endpoint + "!")
+          const year = $("#year").val();
+          loadAllCharts(year)
         });
-      }
 
-      function loadAllCharts(year) {
-        loadChart(salesChart, `/shop/chart/sales/${year}/`);
-        loadChart(spendPerCustomerChart, `/shop/chart/spend-per-customer/${year}/`);
-        loadChart(paymentSuccessChart, `/shop/chart/payment-success/${year}/`);
-        loadChart(paymentMethodChart, `/shop/chart/payment-method/${year}/`);
-      }
+        function loadChart(chart, endpoint) {
+          $.ajax({
+            url: endpoint,
+            type: "GET",
+            dataType: "json",
+            success: (jsonResponse) => {
+              // Extract data from the response
+              const title = jsonResponse.title;
+              const labels = jsonResponse.data.labels;
+              const datasets = jsonResponse.data.datasets;
+
+              // Reset the current chart
+              chart.data.datasets = [];
+              chart.data.labels = [];
+
+              // Load new data into the chart
+              chart.options.title.text = title;
+              chart.options.title.display = true;
+              chart.data.labels = labels;
+              datasets.forEach(dataset => {
+                chart.data.datasets.push(dataset);
+              });
+              chart.update();
+            },
+            error: () => console.log("Failed to fetch chart data from " + endpoint + "!")
+          });
+        }
+
+        function loadAllCharts(year) {
+          loadChart(salesChart, `/shop/chart/sales/${year}/`);
+          loadChart(spendPerCustomerChart, `/shop/chart/spend-per-customer/${year}/`);
+          loadChart(paymentSuccessChart, `/shop/chart/payment-success/${year}/`);
+          loadChart(paymentMethodChart, `/shop/chart/payment-method/${year}/`);
+        }
       </script>
       <script>
         let salesCtx = document.getElementById("salesChart").getContext("2d");
@@ -100,8 +98,8 @@
           options: {
             responsive: true,
             title: {
-                display: false,
-                text: ''
+              display: false,
+              text: ""
             }
           }
         });
@@ -111,8 +109,8 @@
           options: {
             responsive: true,
             title: {
-                display: false,
-                text: ''
+              display: false,
+              text: ""
             }
           }
         });
@@ -124,8 +122,8 @@
             maintainAspectRatio: false,
             aspectRatio: 1,
             title: {
-                display: false,
-                text: ''
+              display: false,
+              text: ""
             },
             layout: {
               padding: {
@@ -145,8 +143,8 @@
             maintainAspectRatio: false,
             aspectRatio: 1,
             title: {
-                display: false,
-                text: ''
+              display: false,
+              text: ""
             },
             layout: {
               padding: {
