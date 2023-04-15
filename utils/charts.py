@@ -1,12 +1,10 @@
-# util/charts.py
-
 months = [
-    'January', 'February', 'March', 'April',
-    'May', 'June', 'July', 'August',
-    'September', 'October', 'November', 'December'
+    "January", "February", "March", "April",
+    "May", "June", "July", "August",
+    "September", "October", "November", "December"
 ]
-colorPalette = ['#55efc4', '#81ecec', '#a29bfe', '#ffeaa7', '#fab1a0', '#ff7675', '#fd79a8']
-colorPrimary, colorSuccess, colorDanger = '#79aec8', colorPalette[0], colorPalette[5]
+colorPalette = ["#55efc4", "#81ecec", "#a29bfe", "#ffeaa7", "#fab1a0", "#ff7675", "#fd79a8"]
+colorPrimary, colorSuccess, colorDanger = "#79aec8", colorPalette[0], colorPalette[5]
 
 
 def get_year_dict():
